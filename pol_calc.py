@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import sys
 import math
@@ -23,11 +25,12 @@ def PolCalc(inname,posx,posy,expt):
     Iins=[]
     #ret=re.split('[jhk]a','ajabhab',1)
     #print ret
+    #print inname
     for a in ang:
         str1=re.findall('[jhk]a',inname)
         str2=re.split('[jhk]a',inname)
         #print str2
-        tinname=str1[0] + a + str2[1]
+        tinname=str2[0] + str1[0] + a + str2[1]
         Iins.extend(CalcCount(tinname,posx,posy,zmag,expt))
     #print Iins
     Stok=Stokes=CalcStokes(Iins)
@@ -57,23 +60,24 @@ def CalcStokes(Iins):
     sQerr = math.sqrt(pow(Iins[5],2.)+pow(Iins[1],2.))
     sU = Iins[6]-Iins[2]
     sUerr = math.sqrt(pow(Iins[7],2.)+pow(Iins[3],2.))
-    print "%lf %lf %lf %lf %lf %lf" % (sI,sIerr,sQ,sQerr,sU,sUerr)
+    print "%lf %lf %lf %lf %lf %lf" % (sI,sIerr,sQ,sQerr,sU,sUerr),
     return  sI,sIerr,sQ,sQerr,sU,sUerr
 
 
 if __name__ == '__main__':
-    posx=float(sys.argv[2])
-    posy=float(sys.argv[3])
-    expt=float(sys.argv[4])
-    fin=open(sys.argv[1])
-    fline=fin.readlines()
-    fin.close
-    for inname in fline:
-        Sins=[] 
-        Sins.extend(PolCalc(inname.rstrip("\n"),posx,posy,expt))
-        # sI,sIerr,sQ,sQerr,sU,sUerr
-        PI=math.sqrt(pow(Sins[2],2.)+pow(Sins[4],2.))
-        PIerr=math.sqrt(pow(Sins[2],2.)*pow(Sins[3],2.)+pow(Sins[4],2.)*pow(Sins[5],2.))/PI
-        P=PI/Sins[0]
-        Perr=math.sqrt(pow(PIerr/Sins[0],2.)+pow(P*Sins[1]/Sins[0],2.))
-        print "%lf %lf" % (P,Perr)
+    posx=float(sys.argv[3])
+    posy=float(sys.argv[4])
+    expt=float(sys.argv[2])
+    #fin=open(sys.argv[1])
+    #fline=fin.readlines()
+    #fin.close
+    #for inname in fline:
+    Sins=[] 
+    Sins.extend(PolCalc(sys.argv[1],posx,posy,expt))
+    #Sins.extend(PolCalc(inname.rstrip("\n"),posx,posy,expt))
+    # sI,sIerr,sQ,sQerr,sU,sUerr
+    PI=math.sqrt(pow(Sins[2],2.)+pow(Sins[4],2.))
+    PIerr=math.sqrt(pow(Sins[2],2.)*pow(Sins[3],2.)+pow(Sins[4],2.)*pow(Sins[5],2.))/PI
+    P=PI/Sins[0]
+    Perr=math.sqrt(pow(PIerr/Sins[0],2.)+pow(P*Sins[1]/Sins[0],2.))
+    print "%lf %lf" % (P,Perr)
